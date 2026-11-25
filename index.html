@@ -1,0 +1,866 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>AQUAVERA</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Hanken+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Düzen: kâğıt sayfada solda başlık, sağda video çerçevesi; kaydırınca çerçeveden koyu laboratuvar açılır. Bölümler kâğıt ve tezgâh renkleri arasında dönüşümlü gider. */
+:root{
+  --paper:#eef1f5; --paper-2:#e1e6ed; --ink:#1d2f9c; --graphite:#171a22; --graphite-mute:#4d5565;
+  --rule:rgba(23,26,34,.2); --pen-red:#b5351f; --bar-before:#7d879a;
+  --bench:#0b0f14; --bench-2:#141b24; --bench-text:#e9ecf1; --bench-mute:#98a2b3; --bench-ink:#aab9ff; --water:#58c7cc;
+  --f-display:'Big Shoulders Display','Arial Narrow','Roboto Condensed','Helvetica Neue Condensed',Impact,sans-serif;
+  --f-body:'Hanken Grotesk','Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,'Cascadia Mono',Consolas,'Courier New',monospace;
+  --gut:max(16px,env(safe-area-inset-left,0px));
+  --gut-r:max(16px,env(safe-area-inset-right,0px));
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--graphite);font:400 17px/1.6 var(--f-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.bench :focus-visible,.night :focus-visible,footer :focus-visible{outline-color:var(--water)}
+.wrap{max-width:1180px;margin-inline:auto;padding-left:var(--gut);padding-right:var(--gut-r)}
+.eyebrow{font:500 11.5px/1.3 var(--f-mono);letter-spacing:.16em;text-transform:uppercase}
+h2{font:800 clamp(38px,6.4vw,78px)/.94 var(--f-display);letter-spacing:.01em;text-transform:uppercase;margin:0;text-wrap:balance}
+h3{font:700 19px/1.3 var(--f-body);margin:0}
+p{margin:0}
+.lead{font-size:clamp(18px,2.1vw,21px);line-height:1.55;max-width:56ch}
+sup.c{font:500 11px var(--f-mono);vertical-align:super;line-height:0}
+sup.c a{text-decoration:none;color:var(--ink);padding:0 1px}
+.bench sup.c a,.night sup.c a,footer sup.c a{color:var(--water)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+#bar{position:fixed;z-index:30;top:0;left:0;right:0;height:3px;background:var(--water);transform-origin:0 50%;transform:scaleX(0);pointer-events:none}
+
+/* ---------- HERO ---------- */
+.hero{height:170vh;position:relative}
+.hero-pin{--reel-h:min(80svh,720px);--reel-w:calc(var(--reel-h)*.5625);--pr:calc(var(--reel-w) + 48px + var(--gut-r));position:sticky;top:0;height:100svh;overflow:hidden;background:var(--paper)}
+.sheet,.night{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) var(--pr) 24px var(--gut)}
+.sheet{z-index:1;color:var(--ink)}
+.title-block{min-width:0;transform:translateX(calc(var(--p,0)*-70px));opacity:calc(1 - var(--p,0)*3.2)}
+.wordmark{font:600 clamp(56px,13vw,210px)/.82 var(--f-display);letter-spacing:.035em;margin:0;text-transform:uppercase;color:var(--ink);animation:rise 1s var(--ease) both}
+.tagline{font:500 clamp(18px,2.1vw,25px)/1.3 var(--f-body);margin-top:20px;max-width:28ch;color:var(--ink);animation:rise 1s .15s var(--ease) both}
+.descr{font:500 11.5px/1.5 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;margin-top:12px;color:var(--graphite-mute);max-width:44ch;animation:rise 1s .2s var(--ease) both}
+.status{display:inline-block;margin-top:20px;padding:8px 12px;border:1.5px solid var(--pen-red);color:var(--pen-red);transform:rotate(-1.2deg);font:500 11.5px/1.5 var(--f-mono);letter-spacing:.03em;max-width:46ch;animation:rise 1s .3s var(--ease) both}
+@keyframes rise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.cue{position:absolute;left:var(--gut);bottom:18px;display:flex;gap:10px;font:500 11px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);pointer-events:none;opacity:calc(1 - var(--p,0)*6)}
+.cue span:last-child{animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(4px)}}
+.night{z-index:2;background:var(--bench);color:var(--bench-text);clip-path:circle(var(--r,0px) at var(--cx,70%) var(--cy,50%))}
+.night-top{position:absolute;top:max(14px,env(safe-area-inset-top,0px));left:var(--gut);display:flex;gap:16px;align-items:baseline}
+.night-top b{font:800 26px/1 var(--f-display);letter-spacing:.06em;color:var(--bench-ink)}
+.night-copy{max-width:560px}
+.night-copy h2{font:800 clamp(34px,5vw,64px)/.95 var(--f-display);text-transform:uppercase;margin:12px 0 18px;text-wrap:balance}
+.night-copy p{color:var(--bench-mute);font-size:16px}
+.readout{margin-top:22px;border-top:1px solid rgba(255,255,255,.16);padding-top:12px;display:grid;gap:6px;font:400 12.5px/1.4 var(--f-mono);color:var(--bench-mute)}
+.readout output{color:var(--water);font-weight:500}
+.cap{min-height:3.2em;color:var(--bench-text);font:400 15px/1.45 var(--f-body)}
+
+/* video çerçevesi */
+.reel{position:relative;aspect-ratio:9/16;height:var(--reel-h);max-width:100%;border:1px solid rgba(255,255,255,.2);border-radius:4px;overflow:hidden;background:#05080b center/cover no-repeat;box-shadow:0 34px 90px -28px rgba(8,12,20,.65),0 0 110px rgba(88,199,204,.1)}
+.reel video{width:100%;height:100%;object-fit:cover;display:block}
+.reel .tag{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.66);color:#e9ecf1;padding:3px 7px;font:500 10.5px var(--f-mono);letter-spacing:.08em}
+.reel .vfail{position:absolute;left:8px;right:8px;top:8px;background:rgba(0,0,0,.72);color:#e9ecf1;padding:6px 8px;font:400 11.5px/1.4 var(--f-mono)}
+.reel.real video{filter:saturate(.82) contrast(1.06) brightness(.84)}
+.reel.real::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 50% 42%,transparent 52%,rgba(11,15,20,.6));pointer-events:none}
+.hero-pin>.reel{position:absolute;z-index:3;right:var(--gut-r);top:50%;transform:translateY(-50%) scale(var(--s,1))}
+
+/* ---------- BÖLÜMLER ---------- */
+section{position:relative}
+.bench{background:var(--bench);color:var(--bench-text)}
+.bench .eyebrow{color:var(--water)}
+.bench .muted{color:var(--bench-mute)}
+.paper{background:var(--paper)}
+.paper-2{background:var(--paper-2)}
+.paper h2,.paper-2 h2{color:var(--ink)}
+.paper .eyebrow,.paper-2 .eyebrow{color:var(--ink)}
+.sec{padding-block:clamp(60px,9vw,120px)}
+.sec .eyebrow{margin-bottom:16px;display:block}
+.sec h2+.lead{margin-top:24px}
+.two{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(24px,5vw,72px);align-items:start}
+.two>*{min-width:0}
+.js .rv{opacity:.3;transform:translateY(22px);transition:opacity .7s var(--ease) var(--d,0s),transform .7s var(--ease) var(--d,0s)}
+.js .rv.in{opacity:1;transform:none}
+.badge{display:inline-block;font:500 10.5px/1.1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;padding:5px 7px;border:1px solid currentColor;white-space:nowrap}
+.b-obs{color:#7fb7ff}.b-lit{color:#c7a8ff}.b-no{color:#ff8a76;border-style:dashed}.b-unk{color:#e5c76b;border-style:dotted}.b-meas{color:#6fd3a5}
+.paper .b-obs,.paper-2 .b-obs{color:#1f4fb0}.paper .b-lit,.paper-2 .b-lit{color:#6a3fb5}.paper .b-no,.paper-2 .b-no{color:#b5351f}.paper .b-unk,.paper-2 .b-unk{color:#7a5d00}.paper .b-meas,.paper-2 .b-meas{color:#14724b}
+.stamp{display:inline-block;padding:8px 12px;border:1.5px solid var(--pen-red);color:var(--pen-red);transform:rotate(-1deg);font:500 12px/1.45 var(--f-mono);letter-spacing:.04em;margin-bottom:22px}
+
+/* özet blokları */
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;margin-top:44px;border-top:1px solid rgba(255,255,255,.22)}
+.trio>div{padding:22px 24px 8px 0;margin-right:24px;border-right:1px solid rgba(255,255,255,.12)}
+.trio>div:last-child{border-right:0;margin-right:0}
+.trio h3{font:800 30px/1 var(--f-display);text-transform:uppercase;color:var(--bench-ink);margin-bottom:10px}
+.trio p{color:var(--bench-text);font-size:16.5px}
+.trio small{display:block;margin-top:10px;color:var(--bench-mute);font:400 12px/1.5 var(--f-mono)}
+.rq{margin-top:36px;padding:20px 22px;border:1px solid rgba(255,255,255,.2);max-width:62ch}
+.rq b{display:block;font:500 11.5px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--water);margin-bottom:8px}
+
+/* sistem şeması */
+.flow-wrap{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(24px,5vw,72px);margin-top:36px;align-items:start}
+.flow{list-style:none;margin:0;padding:0}
+.flow li{position:relative;padding:10px 0 14px 56px;min-height:64px}
+.flow li::before{content:"";position:absolute;left:8px;top:14px;width:24px;height:24px;border:2px solid var(--ink);border-radius:48% 52% 46% 54%/55% 45% 55% 45%;background:var(--paper)}
+.flow li::after{content:"";position:absolute;left:19px;top:40px;bottom:-14px;border-left:2px solid var(--ink)}
+.flow li:last-child::after{display:none}
+.flow li.core::before{background:var(--ink)}
+.flow li.core{background:linear-gradient(90deg,rgba(29,47,156,.09),transparent 80%)}
+.flow li.cond::before{border-style:dashed}
+.flow li.cond::after{border-left-style:dashed}
+.flow b{display:block;font-weight:700;font-size:17px}
+.flow span{color:var(--graphite-mute);font-size:15px}
+.flow .tg{font:500 10.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-left:8px}
+.sysnote{padding:20px 22px;border:1.5px solid var(--ink);color:var(--graphite);font-size:15.5px}
+.sysnote b{display:block;font:500 11.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:8px}
+.sysnote p+p{margin-top:10px}
+
+/* kitle */
+.ladder{list-style:none;margin:36px 0 0;padding:0;display:grid;gap:0}
+.ladder li{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:24px;padding:20px 0;border-top:1px solid var(--rule);align-items:start}
+.ladder li:last-child{border-bottom:1px solid var(--rule)}
+.ladder .lv{font:500 11.5px/1.5 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.ladder b{display:block;font-size:18px}
+.ladder span.d{color:var(--graphite-mute);font-size:15.5px}
+
+/* boncuk */
+.steps{list-style:none;margin:44px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid rgba(255,255,255,.2)}
+.steps li{padding:20px 22px 22px 0;border-right:1px solid rgba(255,255,255,.12);margin-right:22px}
+.steps li:last-child{border-right:0;margin-right:0}
+.steps .n{font:800 44px/1 var(--f-display);color:var(--bench-ink);transition:color .3s,transform .3s var(--ease);display:inline-block}
+.steps li:hover .n{color:var(--water);transform:translateY(-4px)}
+.steps h3{margin:10px 0 6px}
+.steps p{color:var(--bench-mute);font-size:15.5px}
+.comps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:44px}
+.comp{border:1px solid rgba(255,255,255,.2);padding:20px 20px 22px;display:grid;gap:10px;align-content:start}
+.comp .ic{width:46px;height:46px}
+.comp .ic *{fill:none;stroke:var(--water);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.comp h3{font:800 26px/1 var(--f-display);text-transform:uppercase}
+.comp p{color:var(--bench-mute);font-size:15.5px}
+.rec{margin:36px 0 0;max-width:300px}
+.rec .reel{height:auto;width:100%}
+.mini-note{margin-top:14px;font-size:14.5px;max-width:70ch}
+.mag{height:170vh}
+.mag-pin{--reel-h:min(78svh,700px);position:sticky;top:0;height:100svh;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5vw;align-items:center;padding:max(24px,env(safe-area-inset-top,0px)) var(--gut-r) 24px var(--gut);max-width:1180px;margin-inline:auto}
+.mag-copy{max-width:520px;justify-self:end}
+.mag-copy h2{font-size:clamp(38px,6vw,72px);margin:10px 0 20px}
+.mag-copy .cap{margin-top:18px;border-top:1px solid rgba(255,255,255,.16);padding-top:14px}
+
+/* kanıt */
+.charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,4vw,48px);margin-top:36px}
+.chart{margin:0;border:1px solid var(--rule);padding:16px 16px 14px;background:rgba(255,255,255,.5)}
+.chart svg{width:100%;height:auto;display:block}
+.chart svg text{font:500 12px var(--f-mono);fill:var(--graphite)}
+.chart svg .ax{stroke:var(--graphite);stroke-width:1.5}
+.chart svg .b1{fill:var(--bar-before)}
+.chart svg .b2{fill:var(--ink)}
+.chart figcaption{margin-top:8px;font-size:15px}
+.chart figcaption small{display:block;color:var(--graphite-mute);font:400 12px/1.5 var(--f-mono);margin-top:4px}
+.caveat{margin-top:26px;padding:16px 18px;border-left:3px solid var(--pen-red);background:rgba(181,53,31,.07);max-width:70ch;font-size:16px}
+.caveat b{font:500 11.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--pen-red);display:block;margin-bottom:4px}
+.facts{list-style:none;margin:26px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(20px,4vw,48px)}
+.facts li{padding:12px 0;border-top:1px solid var(--rule);font-size:15.5px}
+.ledger{list-style:none;margin:18px 0 0;padding:0}
+.ledger li{display:grid;grid-template-columns:minmax(0,1.25fr) 170px minmax(0,1.5fr);gap:20px;padding:14px 0;border-top:1px solid var(--rule);align-items:start;transition:background .25s}
+.ledger li:hover{background:rgba(29,47,156,.05)}
+.ledger .lc{font-weight:500}
+.ledger .ln{font-size:15px;color:var(--graphite-mute)}
+h3.sub{font:800 clamp(30px,4.6vw,50px)/1 var(--f-display);text-transform:uppercase;color:var(--ink);margin-top:clamp(52px,7vw,84px)}
+details.more{margin-top:14px;border-top:1px solid var(--rule)}
+details.more>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:10px;font:500 12px var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink);list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"+";font-size:18px;width:18px;display:inline-block}
+details.more[open]>summary::before{content:"–"}
+.bench details.more{border-top-color:rgba(255,255,255,.18)}
+.bench details.more>summary{color:var(--water)}
+.fig{margin-top:14px;font:400 12.5px/1.5 var(--f-mono);color:var(--graphite-mute)}
+
+/* pilot */
+.phases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(20px,4vw,48px);margin-top:40px}
+.phase{border:1px solid rgba(255,255,255,.22);padding:22px 22px 18px}
+.phase .eyebrow{margin-bottom:6px}
+.phase h3{font:800 28px/1 var(--f-display);text-transform:uppercase;margin-bottom:12px}
+.phase ul{margin:0;padding-left:18px;color:var(--bench-text);font-size:15.5px}
+.phase li{margin:6px 0}
+.targets{margin-top:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.target{border:1.5px dashed var(--water);padding:16px 18px}
+.target b{display:block;font:800 40px/1 var(--f-display);color:var(--water)}
+.target span{font-size:15.5px;color:var(--bench-text)}
+.target small{display:block;margin-top:6px;font:400 11.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--bench-mute)}
+.rule{margin-top:26px;padding:16px 18px;border-left:3px solid var(--water);background:rgba(88,199,204,.08);max-width:70ch}
+.grid-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 clamp(24px,5vw,64px);margin-top:10px}
+.grid-g>div{padding:14px 0;border-top:1px solid rgba(255,255,255,.14)}
+.grid-g b{display:block;font-size:16px;margin-bottom:4px}
+.grid-g span{color:var(--bench-mute);font-size:15.5px}
+.weeks{list-style:none;margin:24px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0 24px;font-size:15px}
+.weeks li{padding:12px 0;border-top:1px solid rgba(255,255,255,.14)}
+.weeks .w{display:block;font:500 11.5px var(--f-mono);letter-spacing:.1em;color:var(--water);margin-bottom:4px}
+
+/* fark ve iş birliği */
+.diff{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.diff li{padding:22px 24px 10px 0;margin-right:24px;border-top:2px solid var(--ink);border-right:1px solid var(--rule)}
+.diff li:last-child{border-right:0;margin-right:0}
+.diff h3{font:800 26px/1.05 var(--f-display);text-transform:uppercase;color:var(--ink);margin-bottom:8px}
+.diff p{font-size:16px}
+.diff small{display:block;margin-top:8px;color:var(--graphite-mute);font:400 12px/1.5 var(--f-mono)}
+.needs{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.needs li{border:1px solid rgba(255,255,255,.22);padding:20px 20px 22px}
+.needs h3{font:800 26px/1.05 var(--f-display);text-transform:uppercase;color:var(--bench-ink);margin-bottom:8px}
+.needs p{color:var(--bench-mute);font-size:15.5px}
+.call{margin-top:34px;max-width:60ch;font-size:18px}
+
+/* kaynakça */
+.src-lead{font:italic 400 clamp(20px,2.4vw,26px)/1.35 var(--f-body);max-width:34ch;color:var(--graphite)}
+.src-group{margin-top:22px;border-top:1px solid var(--graphite)}
+.src-group>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;justify-content:space-between;gap:12px;font:500 12px var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ink);list-style:none}
+.src-group>summary::-webkit-details-marker{display:none}
+.src-group>summary::after{content:"+";font-size:20px}
+.src-group[open]>summary::after{content:"–"}
+.src-row{display:grid;grid-template-columns:minmax(220px,1.3fr) minmax(200px,1fr) minmax(180px,.8fr);gap:26px;padding:18px 0;border-top:1px solid var(--rule);scroll-margin-top:20px;transition:background .3s}
+.src-row:hover{background:rgba(29,47,156,.04)}
+.src-row:target{background:rgba(29,47,156,.09)}
+.src-row>*{min-width:0}
+.src-name{font:700 17px/1.35 var(--f-body)}
+.src-name small{display:block;font:400 11.5px/1.5 var(--f-mono);color:var(--graphite-mute);margin-top:6px;font-weight:400}
+.src-name i{font:500 11px var(--f-mono);color:var(--ink);font-style:normal;margin-right:8px}
+.src-use{font-size:15px;color:var(--graphite)}
+.src-link{font:400 12px/1.5 var(--f-mono);color:var(--ink);word-break:break-all;display:inline-block;padding:13px 0}
+.src-none{font:400 12px var(--f-mono);color:var(--graphite-mute)}
+.ai{margin-top:34px;padding:22px 24px;border:1.5px solid var(--graphite);max-width:78ch;font-size:15.5px}
+footer{background:var(--graphite);color:#d7dbe3;padding-block:48px}
+footer .wrap{display:grid;gap:10px;font:400 13px/1.6 var(--f-mono)}
+footer b{font:800 30px var(--f-display);letter-spacing:.06em}
+
+/* sol sekme çubuğu / telefonda alt çubuk */
+.rail{position:fixed;z-index:20;left:0;top:0;bottom:0;width:176px;padding:max(22px,env(safe-area-inset-top,0px)) 0 22px max(18px,env(safe-area-inset-left,0px));background:rgba(11,15,20,.95);color:var(--bench-text);border-right:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;gap:2px;transform:translateX(-100%);visibility:hidden;transition:transform .45s var(--ease),visibility 0s .45s}
+.rail.on{transform:none;visibility:visible;transition-delay:0s}
+.rail .brand{min-height:44px;display:flex;align-items:center;font:800 24px/1 var(--f-display);letter-spacing:.07em;color:var(--bench-ink);text-decoration:none;margin-bottom:22px}
+.rail a.tab{font:600 21px/1.1 var(--f-display);text-transform:uppercase;letter-spacing:.04em;text-decoration:none;color:var(--bench-mute);min-height:44px;display:flex;align-items:center;gap:10px;transition:color .2s,transform .3s var(--ease)}
+.rail a.tab:hover{color:var(--bench-text)}
+.rail a.tab::before{content:"";width:2px;height:18px;background:transparent;transition:background .2s}
+.rail a.tab[aria-current="true"]{color:var(--bench-text);transform:translateX(6px)}
+.rail a.tab[aria-current="true"]::before{background:var(--water)}
+.rail small{margin-top:auto;font:400 10.5px/1.5 var(--f-mono);color:var(--bench-mute);padding-right:14px}
+.rail :focus-visible{outline-color:var(--water)}
+@media (min-width:1000px){
+  main .wrap,footer .wrap{max-width:1356px;padding-left:calc(var(--gut) + 176px)}
+  .mag-pin{max-width:1356px;padding-left:calc(var(--gut) + 176px)}
+}
+@media (max-width:999px){
+  .rail{top:auto;left:0;right:0;bottom:0;width:auto;flex-direction:row;align-items:center;gap:2px;padding:4px max(10px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(10px,env(safe-area-inset-left,0px));overflow-x:auto;border-right:0;border-top:1px solid rgba(255,255,255,.12);transform:translateY(100%)}
+  .rail.on{transform:none}
+  .rail .brand,.rail small{display:none}
+  .rail a.tab{font-size:17px;padding:0 12px;white-space:nowrap}
+  .rail a.tab::before{display:none}
+  .rail a.tab[aria-current="true"]{transform:none;background:rgba(255,255,255,.12)}
+  footer{padding-bottom:calc(48px + 56px)}
+}
+@media (max-width:900px){
+  .hero-pin{--reel-h:min(44svh,420px);--pr:var(--gut-r)}
+  .sheet,.night{justify-content:flex-start;padding-top:max(24px,calc(env(safe-area-inset-top,0px) + 12px))}
+  .night{padding-top:max(58px,calc(env(safe-area-inset-top,0px) + 48px))}
+  .hero-pin>.reel{right:auto;left:50%;top:auto;bottom:max(14px,env(safe-area-inset-bottom,0px));transform:translateX(-50%) scale(var(--s,1))}
+  .tagline{margin-top:8px}.descr{margin-top:8px;font-size:10.5px}.status{margin-top:10px;font-size:11px}
+  .cue{display:none}
+  .night-copy h2{font-size:clamp(26px,7.4vw,38px);margin:4px 0 6px}
+  .night-copy p.hide-s{display:none}
+  .readout{margin-top:8px;font-size:11.5px}
+  .two,.flow-wrap,.phases,.targets,.charts,.facts,.comps,.diff,.needs,.trio,.grid-g{grid-template-columns:1fr}
+  .trio>div{border-right:0;margin-right:0;border-bottom:1px solid rgba(255,255,255,.12);padding-right:0}
+  .diff li{border-right:0;margin-right:0;padding-right:0}
+  .steps{grid-template-columns:1fr 1fr}
+  .steps li{border-right:0;margin-right:0;border-bottom:1px solid rgba(255,255,255,.12)}
+  .weeks{grid-template-columns:1fr 1fr}
+  .ladder li{grid-template-columns:1fr;gap:6px}
+  .ledger li{grid-template-columns:1fr;gap:6px;border:1px solid var(--rule);padding:14px;margin-bottom:10px}
+  .src-row{grid-template-columns:1fr;gap:8px}
+  .mag-pin{--reel-h:min(44svh,400px);grid-template-columns:1fr;gap:10px;align-content:center;justify-items:center;padding-top:max(12px,env(safe-area-inset-top,0px))}
+  .mag-pin .reel{order:-1}
+  .mag-copy{justify-self:stretch}
+  .mag-copy h2{font-size:34px;margin:6px 0 8px}
+  .mag-copy .lead{display:none}
+}
+@media (max-width:520px){
+  .steps,.weeks{grid-template-columns:1fr}
+  body{font-size:16.5px}
+}
+@media (max-width:900px) and (orientation:landscape){
+  .hero-pin{--reel-h:min(76svh,420px);--pr:calc(var(--reel-w) + 32px + var(--gut-r))}
+  .hero-pin>.reel{right:var(--gut-r);left:auto;top:50%;bottom:auto;transform:translateY(-50%) scale(var(--s,1))}
+  .sheet,.night{justify-content:center}
+  .mag-pin{--reel-h:min(72svh,420px);grid-template-columns:minmax(0,1fr) auto;justify-items:stretch}
+  .mag-pin .reel{order:0}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .hero,.mag{height:auto}
+  .hero-pin,.mag-pin{position:relative;height:auto;overflow:visible}
+  .hero-pin{--pr:var(--gut-r)}
+  .hero-pin>.reel{position:relative;right:auto;left:auto;top:auto;bottom:auto;transform:none;margin:24px auto}
+  .night{position:relative;clip-path:none;min-height:60svh}
+  .sheet{position:relative;min-height:60svh}
+  .title-block,.cue{transform:none;opacity:1}
+  .wordmark,.tagline,.descr,.status,.cue span{animation:none}
+  .js .rv{opacity:1;transform:none;transition:none}
+  #bar{display:none}
+}
+</style>
+
+<div lang="tr">
+<div id="bar" aria-hidden="true"></div>
+<header class="hero" id="hero">
+  <div class="hero-pin" id="pin">
+    <div class="sheet">
+      <div class="title-block">
+        <h1 class="wordmark">AQUAVERA</h1>
+        <p class="tagline">Gri suyu ikinci kullanıma hazırlayan biyoboncuklar</p>
+        <p class="descr">Gri su ön arıtması için manyetik biyoboncuk prototipi</p>
+        <p class="status">Okul laboratuvarı ön çalışması · Gerçek gri suda güvenli yeniden kullanım henüz doğrulanmadı.</p>
+      </div>
+      <div class="cue"><span>Kaydır</span><span aria-hidden="true">↓</span></div>
+    </div>
+
+    <div class="night" id="night">
+      <div class="night-top"><b>AQUAVERA</b><span class="eyebrow" style="color:var(--bench-mute)">Okul laboratuvarı ön çalışması</span></div>
+      <div class="night-copy">
+        <span class="eyebrow" style="color:var(--water)">Manyetik kitosan biyoboncuklar</span>
+        <h2>Boncuklar iğne ucundan suya</h2>
+        <p class="hide-s">Kitosan, Hindistan cevizi kabuğu biyokömürü ve manyetik katkıdan boncuk yapıyor, gri su ön arıtması için deniyoruz.<sup class="c"><a href="#k7">[7]</a></sup></p>
+        <div class="readout">
+          <div class="cap" id="cap1" aria-live="off">Canlandırma: şırınga beherin üstüne geliyor</div>
+          <div>t = <output id="t1">0,0</output> s / <span id="d1">3,9</span> s<sup class="c"><a href="#k17">[17]</a></sup></div>
+        </div>
+      </div>
+    </div>
+
+    <figure class="reel" id="reelhero" style="margin:0;background-image:url(media/poster-hero-beher.jpg)">
+      <video id="v1" muted playsinline preload="auto" poster="media/poster-hero-beher.jpg" src="media/hero-beher.mp4" aria-label="Canlandırma: şırınga ucundan beherdeki suya siyah boncuklar bırakılıyor"></video>
+      <span class="tag">CANLANDIRMA · GERÇEK KAYIT DEĞİL</span>
+      <span class="vfail" hidden>Video yüklenemedi, görsel gösteriliyor.</span>
+    </figure>
+  </div>
+</header>
+
+<nav class="rail" id="rail" aria-label="Bölümler">
+  <a class="brand" href="#hero" aria-label="Sayfanın başına git">AQUAVERA</a>
+  <a class="tab" href="#ozet" data-tab="ozet">Proje</a>
+  <a class="tab" href="#sistem" data-tab="sistem">Sistem</a>
+  <a class="tab" href="#kitle" data-tab="kitle">Kitle</a>
+  <a class="tab" href="#boncuk" data-tab="boncuk">Boncuk</a>
+  <a class="tab" href="#kanit" data-tab="kanit">Kanıt</a>
+  <a class="tab" href="#pilot" data-tab="pilot">Pilot</a>
+  <a class="tab" href="#kaynakca" data-tab="kaynakca">Kaynaklar</a>
+  <small>Okul laboratuvarı ön çalışması</small>
+</nav>
+
+<main>
+<!-- 30 SANİYELİK ÖZET -->
+<section class="bench sec" id="ozet" data-tab="ozet">
+  <div class="wrap">
+    <span class="eyebrow">Proje</span>
+    <h2 class="rv">Üç cümlede AquaVera</h2>
+    <div class="trio">
+      <div class="rv">
+        <h3>Problem</h3>
+        <p>Duş ve çamaşır kaynaklı gri su çoğunlukla doğrudan uzaklaştırılıyor.</p>
+        <small>Genel bağlam, ölçülmüş veri değil.</small>
+      </div>
+      <div class="rv" style="--d:.08s">
+        <h3>Çözüm</h3>
+        <p>Kitosan, Hindistan cevizi kabuğu biyokömürü ve manyetik katkı içeren, geri toplanabilir boncuklar.<sup class="c"><a href="#k7">[7]</a><a href="#k8">[8]</a></sup></p>
+        <small>Önerilen yaklaşım.</small>
+      </div>
+      <div class="rv" style="--d:.16s">
+        <h3>Mevcut durum</h3>
+        <p>Boncuk üretimi, model su denemeleri ve mıknatısla fiziksel geri toplama gözlendi. Gerçek gri su güvenliği kanıtlanmadı.<sup class="c"><a href="#k7">[7]</a></sup></p>
+        <small>Ön bulgu.</small>
+      </div>
+    </div>
+    <div class="rq rv"><b>Araştırma sorusu</b>Kitosan temelli manyetik boncuklar kirleticiyi azaltırken mıknatısla geri toplanabilir kalıp, tekrar kullanımda performansını koruyabilir mi?<sup class="c"><a href="#k8">[8]</a></sup></div>
+  </div>
+</section>
+
+<!-- SİSTEM -->
+<section class="paper sec" id="sistem" data-tab="sistem">
+  <div class="wrap">
+    <span class="eyebrow">Sistem</span>
+    <h2 class="rv">Nerede ve nasıl kullanılır?</h2>
+    <div class="stamp rv" style="margin-top:26px">Önerilen sistem mimarisi · Henüz fiziksel olarak kurulmadı</div>
+    <div class="flow-wrap">
+      <ol class="flow" aria-label="Önerilen sistem akışı">
+        <li class="rv"><b>Duş / çamaşır gri suyu</b><span>Kaynak. Tuvalet atığı karışmaz.</span></li>
+        <li class="rv"><b>Kaba süzgeç</b><span>Saç, lif ve iri parçaları tutar.</span></li>
+        <li class="rv"><b>Dengeleme tankı</b><span>Debiyi ve bileşimi dengeler.</span></li>
+        <li class="rv"><b>Düşük debili pompa</b><span>Suyu yavaşça temas haznesine verir.</span></li>
+        <li class="core rv"><b>AquaVera temas haznesi<span class="tg">AquaVera</span></b><span>Boncuklar suyla temas eder.</span></li>
+        <li class="core rv"><b>Manyetik tutucu<span class="tg">AquaVera</span></b><span>Boncukların mıknatısla tutulup sistemde kalması hedeflenir.</span></li>
+        <li class="rv"><b>İkinci tank</b><span>Ön arıtılmış su toplanır.</span></li>
+        <li class="rv"><b>İleri arıtma ve dezenfeksiyon</b><span>Kullanım amacına ve analiz sonucuna göre belirlenir. AquaVera bunun yerine geçmez.</span></li>
+        <li class="cond rv"><b>İçme dışı kullanım</b><span>Yalnız uygun analiz sonuçları geldikten sonra.</span></li>
+      </ol>
+      <aside class="sysnote rv">
+        <b>Nasıl okunmalı</b>
+        <p>AquaVera bu hattın yalnız iki adımıdır: temas ve manyetik geri tutma. Tam arıtma sistemi değil, ön arıtma basamağıdır.</p>
+        <p>Arıtılmış su doğrudan güvenli ya da kullanılabilir ilan edilmez.</p>
+        <p style="margin-top:12px;font:400 12px/1.5 var(--f-mono);color:var(--graphite-mute)">Mentor geri bildirimine dayanan önerilen yapı.<sup class="c"><a href="#k18">[18]</a></sup></p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- KİTLE -->
+<section class="paper-2 sec" id="kitle" data-tab="kitle">
+  <div class="wrap">
+    <span class="eyebrow">Kitle</span>
+    <h2 class="rv">Kimin için</h2>
+    <p class="lead rv" style="margin-top:24px">Odağımız evsel nitelikli duş ve çamaşır gri suyu. Okul bir müşteri değil, prototip ve eğitim ortamı.<sup class="c"><a href="#k16">[16]</a></sup></p>
+    <ol class="ladder">
+      <li class="rv"><span class="lv">Seviye 1</span><div><b>Geliştirme ortamı: okul laboratuvarı</b><span class="d">Prototip, deney ve eğitim burada yapılır.</span></div><span class="badge b-obs">Şimdi</span></li>
+      <li class="rv"><span class="lv">Seviye 2</span><div><b>Önerilen ilk pilot adayı: küçük çamaşırhane veya yurt</b><span class="d">Düzenli duş ya da çamaşır gri suyu üreten bir yer. Henüz kimseyle anlaşma yok.<sup class="c"><a href="#k18">[18]</a></sup></span></div><span class="badge b-unk">Aday</span></li>
+      <li class="rv"><span class="lv">Seviye 3</span><div><b>Sonraki kullanıcılar: spor tesisleri, küçük konaklama işletmeleri</b><span class="d">Ancak gerçek gri su ve kullanım ömrü doğrulandıktan sonra.<sup class="c"><a href="#k8">[8]</a><a href="#k18">[18]</a></sup></span></div><span class="badge b-no">Doğrulamadan sonra</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- BONCUK -->
+<section class="bench sec" id="boncuk" data-tab="boncuk">
+  <div class="wrap">
+    <span class="eyebrow">Boncuk</span>
+    <h2 class="rv">Nasıl çalışıyor?</h2>
+    <div class="comps">
+      <div class="comp rv">
+        <svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M10 14h28M14 14v22a4 4 0 0 0 4 4h12a4 4 0 0 0 4-4V14M18 24h12M18 31h12"/></svg>
+        <h3>Kitosan</h3><p>Boncuğun ana yapısı. Metal iyonlarıyla etkileşebilen gruplar taşır.<sup class="c"><a href="#k2">[2]</a></sup></p>
+        <span class="badge b-lit">Literatürde var</span>
+      </div>
+      <div class="comp rv" style="--d:.08s">
+        <svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="14"/><circle cx="19" cy="20" r="2"/><circle cx="28" cy="22" r="2"/><circle cx="22" cy="29" r="2"/><circle cx="30" cy="30" r="1.5"/></svg>
+        <h3>Biyokömür</h3><p>Hindistan cevizi kabuğundan. Ek tutunma yüzeyi sağlaması hedeflenir.</p>
+        <span class="badge b-no">Ayrı katkısı kanıtlanmadı</span>
+      </div>
+      <div class="comp rv" style="--d:.16s">
+        <svg class="ic" viewBox="0 0 48 48" aria-hidden="true"><path d="M12 8v16a12 12 0 0 0 24 0V8H28v16a4 4 0 0 1-8 0V8Z"/><path d="M12 14h8M28 14h8"/></svg>
+        <h3>Manyetik katkı</h3><p>Boncuğun mıknatısla geri toplanmasını sağlar. Tedarik belgesiyle kesin bileşimi doğrulanacak.</p>
+        <span class="badge b-unk">Bileşimi doğrulanacak</span>
+      </div>
+    </div>
+    <ol class="steps">
+      <li class="rv"><div class="n">1</div><h3>Çözmek</h3><p>Kitosan, yaklaşık %1'lik asetik asitte çözülür.</p></li>
+      <li class="rv" style="--d:.08s"><div class="n">2</div><h3>Katmak</h3><p>Biyokömür ve manyetik katkı karışıma eklenir.</p></li>
+      <li class="rv" style="--d:.16s"><div class="n">3</div><h3>Damlatmak</h3><p>Karışım NaOH çözeltisine damlatılır, boncuk olur.</p></li>
+      <li class="rv" style="--d:.24s"><div class="n">4</div><h3>Yıkamak</h3><p>Boncuklar nötr pH'a kadar distile suyla yıkanır.</p></li>
+    </ol>
+    <p class="muted mini-note rv">Karışım oranları eski kayıtta yok. Tahmin etmiyoruz; yeni seride baştan kaydedeceğiz.<sup class="c"><a href="#k8">[8]</a></sup></p>
+    <figure class="rec rv">
+      <div class="reel real" style="background-image:url(media/poster-enjeksiyon.jpg)"><video controls muted playsinline preload="metadata" poster="media/poster-enjeksiyon.jpg" src="media/enjeksiyon.mp4" aria-label="Okul laboratuvarında boncukların enjekte edilmesi, gerçek kayıt"></video></div>
+      <figcaption class="muted" style="margin-top:8px;font:400 12px/1.5 var(--f-mono)">Gerçek kayıt: boncukların enjekte edilmesi.<sup class="c"><a href="#k10">[10]</a></sup></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- MIKNATIS (kaydırmayla ilerler) -->
+<section class="bench mag" id="miknatis" data-tab="boncuk">
+  <div class="mag-pin" id="magpin">
+    <div class="mag-copy">
+      <span class="eyebrow">Geri toplama</span>
+      <h2>Mıknatısla sudan alınır</h2>
+      <p class="lead muted">Boncukları dış bir neodyum mıknatısla kaptan topluyoruz.</p>
+      <div class="cap" id="cap2">Boncuklar kapta dağınık</div>
+      <p class="muted" style="margin-top:10px;font:400 12.5px/1.5 var(--f-mono)">t = <output id="t2" style="color:var(--water)">0,0</output> s / <span id="d2">12,8</span> s<br>Toplanan oran ölçülmedi. Kayıt işlevi gösterir, yüzde vermez.<sup class="c"><a href="#k11">[11]</a></sup></p>
+    </div>
+    <figure class="reel real" style="margin:0;background-image:url(media/poster-miknatis.jpg)">
+      <video id="v2" muted playsinline preload="auto" poster="media/poster-miknatis.jpg" src="media/miknatis.mp4" aria-label="Boncukların mıknatısla toplanması, gerçek kayıt"></video>
+      <span class="tag">GERÇEK KAYIT · MIKNATIS</span>
+      <span class="vfail" hidden>Video yüklenemedi, görsel gösteriliyor.</span>
+    </figure>
+  </div>
+</section>
+
+<!-- KANIT -->
+<section class="paper sec" id="kanit" data-tab="kanit">
+  <div class="wrap">
+    <span class="eyebrow">Kanıt</span>
+    <h2 class="rv">Şimdiye kadar ne ölçtük?</h2>
+    <p class="lead rv" style="margin-top:24px">Okul laboratuvarında model sularla yapılan ön deneme. Değerler önceki proje raporundandır.<sup class="c"><a href="#k7">[7]</a></sup></p>
+    <div class="charts">
+      <figure class="chart rv">
+        <svg viewBox="0 0 260 190" role="img" aria-label="Topraklı model su, TDS önce 127 ppm, sonra 119 ppm">
+          <text x="20" y="16">TDS (ppm) · eksen 0'dan başlar</text>
+          <rect class="b1" x="40" y="41.1" width="70" height="108.9"/><rect class="b2" x="150" y="48" width="70" height="102"/>
+          <line class="ax" x1="20" y1="150" x2="240" y2="150"/>
+          <text x="75" y="35" text-anchor="middle">127</text><text x="185" y="42" text-anchor="middle">119</text>
+          <text x="75" y="170" text-anchor="middle">önce</text><text x="185" y="170" text-anchor="middle">sonra</text>
+        </svg>
+        <figcaption><b>Topraklı su:</b> TDS yaklaşık %6,3 azaldı.<small>pH 7,99 → 7,88 · başarı göstergesi değil</small></figcaption>
+      </figure>
+      <figure class="chart rv" style="--d:.08s">
+        <svg viewBox="0 0 260 190" role="img" aria-label="Deterjanlı model su, TDS önce 256 ppm, sonra 243 ppm">
+          <text x="20" y="16">TDS (ppm) · eksen 0'dan başlar</text>
+          <rect class="b1" x="40" y="40.3" width="70" height="109.7"/><rect class="b2" x="150" y="45.9" width="70" height="104.1"/>
+          <line class="ax" x1="20" y1="150" x2="240" y2="150"/>
+          <text x="75" y="34" text-anchor="middle">256</text><text x="185" y="39" text-anchor="middle">243</text>
+          <text x="75" y="170" text-anchor="middle">önce</text><text x="185" y="170" text-anchor="middle">sonra</text>
+        </svg>
+        <figcaption><b>Deterjanlı su:</b> TDS yaklaşık %5,1 azaldı.<small>pH 8,89 → 7,97 · başarı göstergesi değil</small></figcaption>
+      </figure>
+    </div>
+    <div class="caveat rv"><b>Nasıl okunmalı</b>TDS belirli bir kirleticiyi ölçmez ve tek başına arıtma verimi değildir. Kontrol ve tekrarların ham verisi, tekrar sayısı ve ölçüm belirsizliği kayıtta yok. Sonuçlar ön bulgudur.</div>
+    <ul class="facts">
+      <li class="rv">Her numunede yaklaşık 30 boncuk.</li>
+      <li class="rv">Yaklaşık 60 dakika temas.</li>
+      <li class="rv">Mıknatısla fiziksel geri toplama gözlendi.</li>
+      <li class="rv">Boncuklar fiziksel olarak iki kez yeniden kullanıldı; çevrim performansı ölçülmedi.</li>
+      <li class="rv">Bakır renk testi yarı nicel; kesin giderim yüzdesi yok.<sup class="c"><a href="#k8">[8]</a></sup></li>
+    </ul>
+
+    <h3 class="sub rv">Kanıt defteri</h3>
+    <ul class="ledger" aria-label="Kanıt defteri">
+      <li class="rv"><span class="lc">Boncuklar okulda üretildi</span><span><span class="badge b-obs">Gözlendi</span></span><span class="ln">Fotoğraf ve video var. Tam reçete kayıtta yok.</span></li>
+      <li class="rv"><span class="lc">Mıknatıs boncukları sudan topluyor</span><span><span class="badge b-obs">Gözlendi</span></span><span class="ln">Oran ölçülmedi. Videoda kapta kalan boncuklar da var.</span></li>
+      <li class="rv"><span class="lc">TDS ve pH değişti</span><span><span class="badge b-meas">Ölçüldü</span></span><span class="ln">Kontrol ve tekrar verisi yok. Arıtma kanıtı değil.</span></li>
+      <li class="rv"><span class="lc">Kitosan–biyokömür–manyetik boncuk işe yarayabilir</span><span><span class="badge b-lit">Literatür destekli</span></span><span class="ln">Başkaları denedi;<sup class="c"><a href="#k1">[1]</a><a href="#k2">[2]</a><a href="#k3">[3]</a></sup> burada doğrulanmadı.</span></li>
+      <li class="rv"><span class="lc">Biyokömürün ayrı katkısı</span><span><span class="badge b-no">Henüz test edilmedi</span></span><span class="ln">Biyokömürlü ve biyokömürsüz boncuk karşılaştırılmadı.</span></li>
+      <li class="rv"><span class="lc">Gerçek gri suda çalışması</span><span><span class="badge b-no">Henüz test edilmedi</span></span><span class="ln">Yalnız model sular denendi.</span></li>
+    </ul>
+    <details class="more">
+      <summary>Tüm kanıtları göster</summary>
+      <ul class="ledger" aria-label="Diğer kanıtlar">
+        <li><span class="lc">Bakır kitinde renk azaldı</span><span><span class="badge b-obs">Gözlendi</span></span><span class="ln">Yarı nicel. Kalibrasyon ve cihaz analizi yok.</span></li>
+        <li><span class="lc">Boncuklar iki kez daha fiziksel olarak kullanılabildi</span><span><span class="badge b-obs">Gözlendi</span></span><span class="ln">Çevrim başına performans ölçülmedi.</span></li>
+        <li><span class="lc">Suya parçacık ya da metal salımı</span><span><span class="badge b-no">Henüz test edilmedi</span></span><span class="ln">Salım testi yapılmadı.</span></li>
+        <li><span class="lc">Manyetik katkının kesin bileşimi</span><span><span class="badge b-unk">Bilinmiyor</span></span><span class="ln">NdFe, NdFeB ve Fe₃O₄ aynı sayılmıyor. Tedarik belgesi bekleniyor.</span></li>
+        <li><span class="lc">Karışım oranları, NaOH derişimi, numune hacmi</span><span><span class="badge b-unk">Bilinmiyor</span></span><span class="ln">Eski kayıtta yok.</span></li>
+      </ul>
+    </details>
+    <p class="fig">Teknoloji hazırlık düzeyi: takımın kendi değerlendirmesi THS 3. Resmî onay değildir.<sup class="c"><a href="#k8">[8]</a><a href="#k4">[4]</a></sup></p>
+  </div>
+</section>
+
+<!-- PİLOT -->
+<section class="bench sec" id="pilot" data-tab="pilot">
+  <div class="wrap">
+    <span class="eyebrow">Pilot ve doğrulama</span>
+    <h2 class="rv">Önce laboratuvar, sonra pilot</h2>
+    <p class="lead rv" style="margin-top:24px">TEKNOFEST hakem geri bildirimi net: fark ölçülmeli, kanıt kontrollerle güçlenmeli. Bunların hiçbiri henüz yapılmadı.<sup class="c"><a href="#k9">[9]</a><a href="#k8">[8]</a></sup></p>
+    <div class="phases">
+      <div class="phase rv">
+        <span class="eyebrow">Aşama 1 · Planlanan okul deneyi</span>
+        <h3>Tanımlı model çözelti</h3>
+        <ul>
+          <li>İlk hedef kirletici: bakır</li>
+          <li>Boncuksuz kontrol dâhil karşılaştırma</li>
+          <li>En az üç bağımsız parti</li>
+          <li>Kalibrasyonlu ölçüm; mümkünse dış laboratuvar</li>
+        </ul>
+      </div>
+      <div class="phase rv" style="--d:.08s">
+        <span class="eyebrow">Aşama 2 · Önerilen pilot</span>
+        <h3>Gerçek gri su</h3>
+        <ul>
+          <li>50–100 litrelik kapalı pilot düzenek</li>
+          <li>Gerçek çamaşır veya duş gri suyu</li>
+          <li>İşlemsiz kontrol dâhil, en az üç bağımsız tekrar</li>
+          <li>Bulanıklık, KOİ/COD, yüzey aktif madde ve hedef kirletici analizi</li>
+          <li>Boncuk geri toplama oranı ve üç yeniden kullanım çevriminde performans değişimi</li>
+          <li>Enerji tüketimi ve metreküp başına tahmini maliyet</li>
+        </ul>
+        <p style="margin-top:10px;font:400 11.5px/1.5 var(--f-mono);color:var(--bench-mute)">Önerilen yapı, henüz kurulmadı.<sup class="c"><a href="#k18">[18]</a></sup></p>
+      </div>
+    </div>
+    <div class="targets">
+      <div class="target rv"><b>≥ %90</b><span>Hedef: boncukların geri toplanması<sup class="c"><a href="#k18">[18]</a></sup></span><small>Önerilen hedef, sonuç değil</small></div>
+      <div class="target rv" style="--d:.08s"><b>≥ %80</b><span>Hedef: üçüncü çevrimde ilk çevrim performansının korunması<sup class="c"><a href="#k18">[18]</a></sup></span><small>Önerilen hedef, sonuç değil</small></div>
+    </div>
+    <div class="rule rv"><b>Kural:</b> Bağımsız laboratuvar doğrulaması olmadan su tekrar kullanıma verilmeyecek. Gerçek gri suyun biyolojik riskleri öğretmen danışmanla ayrıca değerlendirilecek.<sup class="c"><a href="#k8">[8]</a></sup></div>
+    <details class="more">
+      <summary>Planlanan laboratuvar aşaması</summary>
+      <div class="grid-g">
+        <div><b>Boncuksuz numune</b><span>Bekleme ve pH kaynaklı azalmayı ayırır.</span></div>
+        <div><b>Yalnız kitosan boncuk</b><span>Ana polimerin etkisi.</span></div>
+        <div><b>Kitosan + manyetik katkı</b><span>Manyetik katkının etkisi ve geri toplama.</span></div>
+        <div><b>Kitosan + biyokömür</b><span>Biyokömürün ayrı katkısı.</span></div>
+        <div><b>Tam kompozit</b><span>Katkıların birlikte performansı.</span></div>
+        <div><b>Kirleticisiz su + boncuk</b><span>Malzemeden suya salım kontrolü.</span></div>
+      </div>
+      <ol class="weeks">
+        <li><span class="w">Hafta 1</span>Kayıt ve malzeme doğrulama</li>
+        <li><span class="w">Hafta 2</span>Ölçüm yöntemini doğrulama</li>
+        <li><span class="w">Hafta 3–4</span>Karşılaştırmalı model deneyleri</li>
+        <li><span class="w">Hafta 5</span>Yeniden kullanım serisi</li>
+        <li><span class="w">Hafta 6</span>Gerçek matris ön denemesi</li>
+        <li><span class="w">Hafta 7</span>Salım ve maliyet</li>
+        <li><span class="w">Hafta 8</span>Analiz ve rapor</li>
+      </ol>
+      <p class="muted" style="margin-top:18px;font-size:14.5px;max-width:70ch">Güvenlik: kimyasal işlemler öğretmen gözetiminde yapılır. Bakırlı sıvılar ve kullanılmış boncuklar lavaboya dökülmez, okulun atık düzenine verilir. Beş yeniden kullanım çevrimi bir hedeftir, sonuç değil.<sup class="c"><a href="#k8">[8]</a><a href="#k9">[9]</a></sup></p>
+    </details>
+  </div>
+</section>
+
+<!-- FARK -->
+<section class="paper-2 sec" id="fark" data-tab="pilot">
+  <div class="wrap">
+    <span class="eyebrow">Fark</span>
+    <h2 class="rv">Farkımız ne?</h2>
+    <p class="lead rv" style="margin-top:24px">Manyetik kitosan ve biyokömür kompozitleri literatürde var.<sup class="c"><a href="#k1">[1]</a><a href="#k2">[2]</a><a href="#k3">[3]</a></sup> “İlk” ya da “benzersiz malzeme” demiyoruz.</p>
+    <ul class="diff">
+      <li class="rv"><h3>Okulda üretilen protokol</h3><p>Okul laboratuvarında yapılabilen, uygulamalı bir üretim ve ölçüm yöntemi.</p><small>Hedef. Tam reçete henüz kayıtlı değil.</small></li>
+      <li class="rv" style="--d:.08s"><h3>Mıknatısla geri toplama</h3><p>Filtre ihtiyacını azaltmayı hedefleyen geri toplama.</p><small>Fiziksel toplama gözlendi; filtre ihtiyacını azalttığı henüz gösterilmedi.</small></li>
+      <li class="rv" style="--d:.16s"><h3>Tek geliştirme yolu</h3><p>Deney verisi, yeniden kullanım ve saha pilotu aynı yolda birleşir.</p><small>Plan. Saha pilotu henüz yok.</small></li>
+    </ul>
+    <p class="fig rv" style="margin-top:28px">Yaklaşık 4.150 TL, önceki prototip ve deney malzemelerinin satın alma toplamıdır. Ürün fiyatı, litre başına maliyet ya da piyasa avantajı değildir.<sup class="c"><a href="#k7">[7]</a></sup></p>
+  </div>
+</section>
+
+<!-- İŞ BİRLİĞİ -->
+<section class="bench sec" id="isbirligi" data-tab="pilot">
+  <div class="wrap">
+    <span class="eyebrow">İş birliği</span>
+    <h2 class="rv">Neye ihtiyacımız var?</h2>
+    <ul class="needs">
+      <li class="rv"><h3>Analiz laboratuvarı</h3><p>Bağımsız analiz yapabilecek bir laboratuvar.</p></li>
+      <li class="rv" style="--d:.08s"><h3>Kimya ve çevre mentoru</h3><p>Protokolü değerlendirecek bir mentor.</p></li>
+      <li class="rv" style="--d:.16s"><h3>Yurt veya çamaşırhane</h3><p>Sonuçlar uygun çıkarsa küçük pilota açık bir işletme.</p></li>
+    </ul>
+    <p class="call rv">Bu üç adımdan birine katkı verebilirsen bize yaz. İletişim bilgilerimiz Genç AR-GE başvuru dosyamızda.<sup class="c"><a href="#k6">[6]</a></sup></p>
+  </div>
+</section>
+
+<!-- KAYNAKÇA -->
+<section class="paper sec" id="kaynakca" data-tab="kaynakca">
+  <div class="wrap">
+    <span class="eyebrow">Kaynaklar</span>
+    <h2 class="rv">Her bilginin geldiği yer</h2>
+    <p class="src-lead rv" style="margin-top:24px">Sayfadaki her sayı, iddia ve görsel aşağıdaki kayıtlardan birine dayanıyor. Bağlantısı olmayanlar takımın kendi belgeleri.</p>
+
+    <details class="src-group" open>
+      <summary>Bilimsel literatür</summary>
+      <div class="src-row" id="k1">
+        <p class="src-name"><i>[1]</i>Designing chitosan based magnetic beads with conocarpus waste-derived biochar for efficient sulfathiazole removal from contaminated water<small>Al-Wabel, M. I., Ahmad, M., Usman, A. R. A., Al-Farraj, A. S. F. (2021) · Saudi Journal of Biological Sciences 28(11), 6218–6229</small></p>
+        <p class="src-use">Önemli bir önceki çalışma. Fikrin makul olduğunu gösterir; AQUAVERA'nın sonucunu kanıtlamaz.</p>
+        <a class="src-link" href="https://doi.org/10.1016/j.sjbs.2021.06.072" target="_blank" rel="noopener noreferrer">doi.org/10.1016/j.sjbs.2021.06.072</a>
+      </div>
+      <div class="src-row" id="k2">
+        <p class="src-name"><i>[2]</i>Preparation and adsorption properties of magnetic chitosan/sludge biochar composites for removal of Cu²⁺ ions<small>Zhang, M., Liu, Y., Yin, Z., Feng, D., Lv, H. (2023) · Scientific Reports 13, 20937</small></p>
+        <p class="src-use">Bakır için manyetik kitosan–biyokömür kompoziti. Kitosanın metal iyonlarıyla etkileşimi ve yakın literatür karşılaştırması için kullanıldı.</p>
+        <a class="src-link" href="https://doi.org/10.1038/s41598-023-46815-4" target="_blank" rel="noopener noreferrer">doi.org/10.1038/s41598-023-46815-4</a>
+      </div>
+      <div class="src-row" id="k3">
+        <p class="src-name"><i>[3]</i>Chitosan-assisted magnetic coconut shell biochar for polystyrene microplastic removal: Mechanism and reusability<small>Kapoor, R. T., Rafatullah, M., Vashisht, A., Alam, M., Siddiqui, M. R. (2026) · Environmental Progress &amp; Sustainable Energy 45(4), e70202 · çevrim içi 20.11.2025</small></p>
+        <p class="src-use">Hindistan cevizi kabuğu biyokömürü, kitosan ve manyetik yapı birlikte kullanılmış. Hindistan cevizi kabuğunu tek başına yenilik saymıyoruz.</p>
+        <a class="src-link" href="https://doi.org/10.1002/ep.70202" target="_blank" rel="noopener noreferrer">doi.org/10.1002/ep.70202</a>
+      </div>
+    </details>
+
+    <details class="src-group">
+      <summary>Resmî ve yarışma belgeleri</summary>
+      <div class="src-row" id="k4">
+        <p class="src-name"><i>[4]</i>Biyoteknoloji İnovasyon Yarışması Şartnamesi V1.1 ve PDR şablonu<small>TEKNOFEST (2026)</small></p>
+        <p class="src-use">Teknoloji hazırlık seviyesi tanımı ve rapor yapısı.</p>
+        <a class="src-link" href="https://www.teknofest.org/tr/yarismalar/biyoteknoloji-inovasyon-yarismasi/" target="_blank" rel="noopener noreferrer">teknofest.org/tr/yarismalar/biyoteknoloji-inovasyon-yarismasi</a>
+      </div>
+      <div class="src-row" id="k5">
+        <p class="src-name"><i>[5]</i>"Maarif İklim İdeathonu" Yarışması yazısı, Sayı E-90757378-821-168014091<small>Millî Eğitim Bakanlığı, Mesleki ve Teknik Eğitim Genel Müdürlüğü · 07.09.2026</small></p>
+        <p class="src-use">Başvuru yapılan yarışmalardan biri olan Maarif İklim İdeathonu bağlamı.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+      <div class="src-row" id="k6">
+        <p class="src-name"><i>[6]</i>Genç AR-GE<small>Millî Eğitim Bakanlığı Strateji Geliştirme Başkanlığı · resmî program sitesi</small></p>
+        <p class="src-use">Bu sayfanın hazırlandığı program.</p>
+        <a class="src-link" href="https://gencarge.meb.gov.tr/" target="_blank" rel="noopener noreferrer">gencarge.meb.gov.tr</a>
+      </div>
+    </details>
+
+    <details class="src-group">
+      <summary>Takım belgeleri</summary>
+      <div class="src-row" id="k7">
+        <p class="src-name"><i>[7]</i>AQUAVERA: Manyetik kitosan biyoboncuklar ile gri su arıtımı, Proje Detay Raporu<small>AQUAVERA takımı · TEKNOFEST Biyoteknoloji, 28 Haziran 2026 · Tablo 2 ve görsel ekler</small></p>
+        <p class="src-use">pH ve TDS ölçümleri, 30 boncuk ve 60 dakika koşulu, satın alma toplamı. Yüzdeler başlangıç TDS değerine göre hesaplandı.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+      <div class="src-row" id="k8">
+        <p class="src-name"><i>[8]</i>Manyetik kitosan biyoboncukların model sularda ön arıtma ve geri kazanım performansının incelenmesi<small>AQUAVERA takımı · revize teknik rapor, Ekim 2026</small></p>
+        <p class="src-use">Araştırma sorusu, sınırlılıklar, planlanan deneyler, THS 3 değerlendirmesi ve güvenlik notları.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+      <div class="src-row" id="k9">
+        <p class="src-name"><i>[9]</i>TEKNOFEST PDR değerlendirme ekranları ve takımın hakem analizi, deney planı notu<small>Takım arşivi · 22 Ekim 2026</small></p>
+        <p class="src-use">“Fark ölçülmeli, kontroller güçlenmeli” geri bildirimi ve beş çevrim hedefi. Puanlar bu sayfada verilmedi.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+      <div class="src-row" id="k16">
+        <p class="src-name"><i>[16]</i>AQUAVERA, Maarif İklim İdeathonu başvuru sunumu<small>AQUAVERA takımı · 5 sayfa · 2026</small></p>
+        <p class="src-use">Okulun prototip ve eğitim ortamı rolü, okulda devamlılık planı.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+      <div class="src-row" id="k18">
+        <p class="src-name"><i>[18]</i>Mentor geri bildirimi ve takımın jüri dosyası revizyon notu<small>Takım arşivi · 2026</small></p>
+        <p class="src-use">Önerilen sistem mimarisi, pilot adayları, pilot ölçüm listesi ve hedefler. Bunlar önerilen yapıdır; hiçbiri uygulanmış değildir.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+    </details>
+
+    <details class="src-group">
+      <summary>Görsel kayıtlar</summary>
+      <div class="src-row" id="k17">
+        <p class="src-name"><i>[17]</i>Şırıngadan behere siyah boncuk canlandırması<small>Yapay zekâ ile üretilmiş video (Google Gemini) · takım kesip yeniden kodladı · 720×1280</small></p>
+        <p class="src-use">Açılıştaki video. Gerçek deney değildir, yalnız anlatım içindir. İğne gövdesinde boncuk görünen kareler kesildi. Boncuk boyutu ve sayısı gerçeği temsil etmez.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+      <div class="src-row" id="k10">
+        <p class="src-name"><i>[10]</i>Boncukların enjekte edilmesi<small>AQUAVERA okul laboratuvarı kaydı · 51 sn · 478×850</small></p>
+        <p class="src-use">Boncuk bölümündeki gerçek kayıt. Boncukların kümelenme nedeni bu kayıttan belirlenemez.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+      <div class="src-row" id="k11">
+        <p class="src-name"><i>[11]</i>Biyoboncukların suda mıknatısla toplanması<small>AQUAVERA okul laboratuvarı kaydı · 12,8 sn · 478×850</small></p>
+        <p class="src-use">Geri toplama bölümündeki gerçek kayıt.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+      <div class="src-row" id="k12">
+        <p class="src-name"><i>[12]</i>Taslak çizim (A4, el çizimi)<small>AQUAVERA takımı</small></p>
+        <p class="src-use">Açılış düzeni: başlık, şırınga ve beher.</p>
+        <span class="src-none">açık bağlantı yok</span>
+      </div>
+    </details>
+
+    <details class="src-group">
+      <summary>Teknik araçlar</summary>
+      <div class="src-row" id="k13">
+        <p class="src-name"><i>[13]</i>SafePath (NASA Space Apps 2026)<small>aliandacerdass · Apache-2.0</small></p>
+        <p class="src-use">Yalnız Kaynakça düzeni ve sol sekme fikri. Renk, yazı tipi ve kod alınmadı.</p>
+        <a class="src-link" href="https://github.com/aliandacerdass/NASA_Spaceapp26" target="_blank" rel="noopener noreferrer">github.com/aliandacerdass/NASA_Spaceapp26</a>
+      </div>
+      <div class="src-row" id="k14">
+        <p class="src-name"><i>[14]</i>Big Shoulders Display, Hanken Grotesk, JetBrains Mono<small>Google Fonts üzerinden yüklenen yazı tipleri</small></p>
+        <p class="src-use">Başlık, metin ve veri yazıları. Yüklenmezse sistem yazı tiplerine düşer.</p>
+        <a class="src-link" href="https://fonts.google.com/" target="_blank" rel="noopener noreferrer">fonts.google.com</a>
+      </div>
+      <div class="src-row" id="k15">
+        <p class="src-name"><i>[15]</i>FFmpeg<small>Video kodlama aracı</small></p>
+        <p class="src-use">Videolar kaydırmayla oynatılabilsin diye sessiz ve yeniden kodlandı. Gerçek kayıtlara sayfada hafif ton uyumu uygulanır.</p>
+        <a class="src-link" href="https://ffmpeg.org/" target="_blank" rel="noopener noreferrer">ffmpeg.org</a>
+      </div>
+    </details>
+
+    <div class="ai rv"><b style="display:block;font:500 11.5px var(--f-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin-bottom:6px">Yapay zekâ kullanımı</b>Bu sayfanın kodunu ve metin taslağını Claude (Anthropic) yazdı. Açılıştaki boncuk videosunu Google Gemini üretti ve gerçek deney değildir. Bilgiler takımın raporlarından alındı; yeni deney sonucu üretilmedi. Literatür künyeleri Crossref ve DOI bağlantılarıyla kontrol edildi. Yayına çıkmadan önce metni takım ve danışman öğretmen doğrulamalıdır.</div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <b>AQUAVERA</b>
+    <span>Otomotiv İhracatçıları Birliği Mesleki ve Teknik Anadolu Lisesi, Bursa</span>
+    <span>Okul laboratuvarı ön çalışması. Hakemli yayın değildir; içme suyu veya ticari arıtma ürünü iddiası taşımaz.</span>
+    <span>Çalışma, Maarif İklim İdeathonu<sup class="c"><a href="#k5">[5]</a></sup> ve TEKNOFEST Biyoteknoloji<sup class="c"><a href="#k4">[4]</a></sup> raporlarının devamıdır; bu sayfa Genç AR-GE<sup class="c"><a href="#k6">[6]</a></sup> için hazırlandı.</span>
+    <span>Açılış düzeni takımın A4 taslağına dayanır.<sup class="c"><a href="#k12">[12]</a></sup> Sekme ve kaynakça düzeni için SafePath<sup class="c"><a href="#k13">[13]</a></sup> örnek alındı. Yazı tipleri<sup class="c"><a href="#k14">[14]</a></sup>, video işleme<sup class="c"><a href="#k15">[15]</a></sup>.</span>
+  </div>
+</footer>
+</div>
+
+<script>
+document.documentElement.lang='tr';
+(function(){
+  var rail=document.getElementById('rail'),hero=document.getElementById('hero'),bar=document.getElementById('bar');
+  var tabs=[].slice.call(rail.querySelectorAll('a.tab'));
+  var secs=[].slice.call(document.querySelectorAll('main section[data-tab]'));
+  function spy(){
+    rail.classList.toggle('on',hero.getBoundingClientRect().bottom<innerHeight*.6);
+    var cur='';
+    secs.forEach(function(s){ if(s.getBoundingClientRect().top<=innerHeight*.4) cur=s.getAttribute('data-tab'); });
+    tabs.forEach(function(a){ if(a.getAttribute('data-tab')===cur) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); });
+    var h=document.documentElement.scrollHeight-innerHeight;
+    bar.style.transform='scaleX('+(h>0?Math.min(1,Math.max(0,scrollY/h)):0)+')';
+  }
+  addEventListener('scroll',spy,{passive:true}); addEventListener('resize',spy); spy();
+  // atıf bağlantısı kapalı bir kaynakça grubuna gidiyorsa grubu aç
+  function openFor(id){ var t=document.getElementById(id); var d=t&&t.closest?t.closest('details'):null; if(d&&!d.open) d.open=true; }
+  document.addEventListener('click',function(e){ var a=e.target.closest&&e.target.closest('a[href^="#k"]'); if(a) openFor(a.getAttribute('href').slice(1)); });
+  addEventListener('hashchange',function(){ openFor(location.hash.slice(1)); });
+  if(location.hash) openFor(location.hash.slice(1));
+  // geçişler: JS çalışırsa .js sınıfı eklenir, yoksa her şey olduğu gibi görünür
+  document.documentElement.classList.add('js');
+  var rv=[].slice.call(document.querySelectorAll('.rv'));
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } })},{threshold:.12});
+    rv.forEach(function(el){io.observe(el)});
+  } else { rv.forEach(function(el){el.classList.add('in')}); }
+})();
+</script>
+<script>
+(function(){
+  var clamp=function(x,a,b){return Math.min(b==null?1:b,Math.max(a==null?0:a,x))};
+  var ease=function(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2};
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fmt=function(n){return n.toFixed(1).replace('.',',')};
+  var $=function(id){return document.getElementById(id)};
+  var v1=$('v1'),v2=$('v2');
+  function failMsg(v){ var m=v.parentNode&&v.parentNode.querySelector('.vfail'); if(m) m.hidden=false; v.controls=false; }
+  [v1,v2].forEach(function(v){ v.addEventListener('error',function(){ failMsg(v); }); if(v.error||v.networkState===3) failMsg(v); });
+
+  if(reduce){ v1.controls=true; v2.controls=true; return; }
+
+  var hero=$('hero'),pin=$('pin'),night=$('night'),reel=$('reelhero'),mag=$('miknatis'),sheet=pin.querySelector('.sheet');
+  var st={h:{t:0,c:0},m:{t:0,c:0}};
+  var geo={cx:0,cy:0,max:0};
+
+  function measure(){
+    var pr=pin.getBoundingClientRect(),o=reel.getBoundingClientRect();
+    geo.cx=o.left-pr.left+o.width/2; geo.cy=o.top-pr.top+o.height/2;
+    var w=pr.width,h=pr.height;
+    geo.max=Math.max(Math.hypot(geo.cx,geo.cy),Math.hypot(w-geo.cx,geo.cy),Math.hypot(geo.cx,h-geo.cy),Math.hypot(w-geo.cx,h-geo.cy))+20;
+    night.style.setProperty('--cx',geo.cx+'px'); night.style.setProperty('--cy',geo.cy+'px');
+  }
+  function target(){
+    var vh=innerHeight;
+    var r=hero.getBoundingClientRect(); st.h.t=clamp(-r.top/Math.max(1,r.height-vh));
+    var m=mag.getBoundingClientRect(); st.m.t=clamp(-m.top/Math.max(1,m.height-vh));
+  }
+  function seek(v,t){
+    var d=v.duration;
+    if(!d||!isFinite(d)||v.readyState<1) return;
+    t=clamp(t,0,d-.05);
+    if(!v.seeking&&Math.abs(v.currentTime-t)>.04) v.currentTime=t;
+  }
+  function cap1(f){
+    return f<.25?'Canlandırma: şırınga beherin üstüne geliyor'
+         :f<.8?'Canlandırma: boncuklar iğne ucundan suya bırakılıyor'
+         :'Canlandırma: boncuklar suda dibe doğru iniyor';
+  }
+  function cap2(f){
+    return f<.28?'Boncuklar kapta dağınık'
+         :f<.62?'Mıknatıs boncuklara yaklaştırılıyor'
+         :'Boncukların bir kısmı mıknatısa tutunuyor; kapta kalanlar da var';
+  }
+  var lastC1='',lastC2='';
+  function frame(){
+    st.h.c+=(st.h.t-st.h.c)*.18; st.m.c+=(st.m.t-st.m.c)*.18;
+    var p=st.h.c;
+    var rev=ease(clamp((p-.04)/.3));
+    night.style.setProperty('--r',(rev*geo.max)+'px');
+    pin.style.setProperty('--p',p.toFixed(3));
+    reel.style.setProperty('--s',(1+rev*.05).toFixed(3));
+    night.inert=rev<.02; sheet.inert=rev>.98;
+    var f1=clamp((p-.28)/.7);
+    seek(v1,f1*(v1.duration||0));
+    if(v1.duration&&isFinite(v1.duration)){ $('t1').textContent=fmt(f1*v1.duration); $('d1').textContent=fmt(v1.duration); }
+    var c1=cap1(f1); if(c1!==lastC1){$('cap1').textContent=c1;lastC1=c1}
+    var f2=clamp((st.m.c-.12)/.78);
+    seek(v2,f2*(v2.duration||0));
+    if(v2.duration&&isFinite(v2.duration)){ $('t2').textContent=fmt(f2*v2.duration); $('d2').textContent=fmt(v2.duration); }
+    var c2=cap2(f2); if(c2!==lastC2){$('cap2').textContent=c2;lastC2=c2}
+    requestAnimationFrame(frame);
+  }
+  addEventListener('scroll',target,{passive:true});
+  addEventListener('resize',function(){measure();target()});
+  addEventListener('load',function(){measure();target()});
+  measure();target();requestAnimationFrame(frame);
+  [v1,v2].forEach(function(v){ v.addEventListener('loadedmetadata',function(){v.pause()}); });
+  setTimeout(function(){[v1,v2].forEach(function(v){ if(v.readyState<2&&!v.error) v.controls=true; })},8000);
+})();
+</script>
+
+</body></html>
